@@ -11,11 +11,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import sz.pl.localweatherapp.db.City;
 import sz.pl.localweatherapp.service.impl.DatabaseServiceImpl;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    @BindView(R.id.cityList) ListView listView;
     /**
      * Instance of the database management service
      */
@@ -29,9 +32,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        ListView listView = findViewById(R.id.cityList);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
         listView.setAdapter(databaseService.generateList(this));
         listView.setOnItemClickListener(this);
     }

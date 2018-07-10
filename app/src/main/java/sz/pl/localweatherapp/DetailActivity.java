@@ -10,6 +10,8 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,11 +21,13 @@ import sz.pl.localweatherapp.service.impl.RestServiceImpl;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView cityField;
-    private TextView updatedField;
-    private TextView detailsField;
-    private TextView currentTemperatureField;
-    private ImageView weatherIcon;
+    @BindView(R.id.city_field) TextView cityField;
+    @BindView(R.id.updated_field) TextView updatedField;
+    @BindView(R.id.current_temperature_field) TextView currentTemperatureField;
+    @BindView(R.id.weather_icon) ImageView weatherIcon;
+    @BindView(R.id.description) TextView descriptiopn;
+    @BindView(R.id.humidity) TextView humidity;
+    @BindView(R.id.pressure) TextView pressure;
 
     /**
      * Instance of the rest management service
@@ -40,12 +44,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        cityField = findViewById(R.id.city_field);
-        updatedField = findViewById(R.id.updated_field);
-        detailsField = findViewById(R.id.details_field);
-        currentTemperatureField = findViewById(R.id.current_temperature_field);
-        weatherIcon = findViewById(R.id.weather_icon);
-
+        ButterKnife.bind(this);
         getWeatherInformation();
     }
 
@@ -63,14 +62,12 @@ public class DetailActivity extends AppCompatActivity {
                         assert dto != null;
                         cityField.setText(dto.getName());
                         updatedField.setText(DateFormat.getDateTimeInstance().format(new Date((long) (dto.getDt() * 1000))));
-                        detailsField.setText(String.format(
-                                "%s\n" + getString(R.string.humidity) + " %s%%\n" + getString(R.string.pressure) + " %s",
-                                dto.getWeather().getDescription(),
-                                dto.getMain().getHumidity(),
-                                dto.getMain().getPressure()
-                        ));
-                        currentTemperatureField.setText(String.format("%s " + getString(R.string.celsius), dto.getMain().getTemp()));
                         weatherIcon.setImageResource(dto.getIcon());
+                        descriptiopn.setText(dto.getWeather().getDescription());
+                        humidity.setText(String.format("%s%%", getString(R.string.humidity) + dto.getMain().getHumidity()));
+                        pressure.setText(String.format("%s", getString(R.string.pressure) + dto.getMain().getPressure()));
+                        currentTemperatureField.setText(String.format("%s " + getString(R.string.celsius), dto.getMain().getTemp()));
+
                     } catch (NullPointerException ex) {
                         handleError();
                     }
